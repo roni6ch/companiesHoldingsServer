@@ -6,28 +6,28 @@ export class companiesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Get('')
-  getCompanies(): any {
+  async getCompanies() {
     return this.companiesService.getCompanies();
   }
 
   @Get(':_id')
-  getCompany(@Param('_id') compId: string): any {
+  async getCompany(@Param('_id') compId: string) {
     return this.companiesService.getCompany(compId);
   }
 
   @Post('')
-  addCompany(@Body('name') name: string,@Body('branch') branch: string): any {
-    const generatedId = this.companiesService.addCompany(name,branch);
+  async addCompany(@Body('name') name: string,@Body('branch') branch: string) {
+    const generatedId = await this.companiesService.addCompany(name,branch);
     return { id: generatedId };
   }
   
   @Patch(':_id')
-  editCompany(@Param('_id') compId: string,@Body('name') name: string,@Body('branch') branch: string){
+  async editCompany(@Param('_id') compId: string,@Body('name') name: string,@Body('branch') branch: string){
     this.companiesService.editCompany(compId,name,branch);
     return null;
   }
   @Delete(':_id')
-  deleteCompany(@Param('_id') compId: string){
+  async deleteCompany(@Param('_id') compId: string){
     this.companiesService.deleteCompany(compId);
     return null;
   }

@@ -7,8 +7,9 @@ import { AppService } from './app.service';
 import { CompaniesModule } from './companies/companies.module';
 
 @Module({
-  imports: [CompaniesModule , MongooseModule.forRoot('mongodb://localhost/nest')],
+  imports: [CompaniesModule , MongooseModule.forRoot('mongodb://roni6ch:abcde12345@ds047958.mlab.com:47958/companies-holdings')],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
+ 

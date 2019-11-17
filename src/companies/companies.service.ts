@@ -1,47 +1,54 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { Company } from './companies.model';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class CompaniesService {
-  companies: Company[] = [];
 
-  addCompany(name: string, branch: string) {
-    const companyId = String(+new Date());
-    const newCompany = new Company(companyId, name, branch);
-    this.companies.push(newCompany);
-    return companyId;
+  constructor(@InjectModel('Company') private readonly companyModel: Model<Company>) { }
+
+  async addCompany(name: string, branch: string) {
+    const newCompany = new this.companyModel({ name, branch });
+    const company = await newCompany.save();
+    return company.id as string;
   }
-  getCompanies() {
-    //returning copy of companies array in order not to return the reference of the same variable
-    return [...this.companies];
+  async getCompanies() {
+    const companies = await this.companyModel.find().exec();
+    return companies as Company[];
   }
-  getCompany(compId: string) {
-    const company = this.findCompany(compId)[0];
-      return { ...company };
+  async getCompany(compId: string) {
+    const company = await this.companyModel.findById(compId);
+    return company;
   }
 
-  editCompany(compId: string, name: string, branch: string) {
-    const [company,index] = this.findCompany(compId);
-    const editedCompany = { ...company };
-    if (name){
-        editedCompany.name = name;
+  async editCompany(compId: string, name: string, branch: string) {
+    const company = await this.findCompany(compId);
+    if (name) {
+      company.name = name;
     }
-    if (branch){
-        editedCompany.branch = branch;
+    if (branch) {
+      company.branch = branch;
     }
-    this.companies[index] = editedCompany;
-    return { ...company };
+    //company already has id so it will only update the document in the db
+    company.save();
   }
-  deleteCompany(compId: string) {
-    const [_,index] = this.findCompany(compId)[1];
-    this.companies.splice(+index,1);
+  async deleteCompany(compId: string) {
+    const company = await this.companyModel.deleteOne({ _id: compId }).exec();
+    if (company.n === 0) {
+      throw new NotFoundException('Could not find Company.');
+    }
   }
-  findCompany(compId) : [Company , string] {
-    const companyIndex = String(this.companies.findIndex(comp => comp._id === compId));
-    const company = this.companies[companyIndex];
+  async findCompany(compId: string): Promise<Company> {
+    let company;
+    try {
+      company = await this.companyModel.findById(compId).exec();
+    } catch (error) {
+      throw new NotFoundException('Could not find Company');
+    }
     if (!company) {
       throw new NotFoundException('Could not find Company');
     }
-    return [company,companyIndex];
+    return company;
   }
 }
