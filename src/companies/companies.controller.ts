@@ -23,8 +23,7 @@ export class companiesController {
   
   @Patch(':_id')
   async editCompany(@Param('_id') compId: string,@Body('name') name: string,@Body('branch') branch: string){
-    this.companiesService.editCompany(compId,name,branch);
-    return null;
+    return this.companiesService.editCompany(compId,name,branch);
   }
   @Delete(':_id')
   async deleteCompany(@Param('_id') compId: string){

@@ -31,7 +31,10 @@ export class CompaniesService {
       company.branch = branch;
     }
     //company already has id so it will only update the document in the db
-    company.save();
+    const updated = await company.save();
+    if (updated)
+      return true;
+    return false;
   }
   async deleteCompany(compId: string) {
     const company = await this.companyModel.deleteOne({ _id: compId }).exec();
