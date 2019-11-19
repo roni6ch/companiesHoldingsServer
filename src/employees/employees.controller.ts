@@ -10,24 +10,32 @@ export class EmployeesController {
     return this.employeesService.getEmployees();
   }
 
+  @Post('')
+  async addEmployee(@Body('first_name') first_name: string,@Body('last_name') last_name: string,
+  @Body('tz_id') tz_id: number,@Body('role') role: string,
+  @Body('company') company: string,@Body('manager') manager: boolean,
+  @Body('experience') experience: number,@Body('salary') salary: number) {
+    const generatedId = await this.employeesService.addEmployee(first_name,last_name,tz_id,role,company,manager,experience,salary);
+    return { id: generatedId };
+  }
+
+  @Patch(':_id')
+  async editEmployee(@Param('_id') employeeId: string,@Body('first_name') first_name: string,@Body('last_name') last_name: string,
+  @Body('tz_id') tz_id: number,@Body('role') role: string,
+  @Body('company') company: string,@Body('manager') manager: boolean,
+  @Body('experience') experience: number,@Body('salary') salary: number){
+    return this.employeesService.editEmployee(employeeId,first_name,last_name,tz_id,role,company,manager,experience,salary);
+  }
+  
   @Get(':_id')
   async getEmployee(@Param('_id') employeeId: string) {
     return this.employeesService.getEmployee(employeeId);
   }
 
-  @Post('')
-  async addEmployee(@Body('name') name: string,@Body('branch') branch: string) {
-    const generatedId = await this.employeesService.addEmployee(name,branch);
-    return { id: generatedId };
-  }
   
-  @Patch(':_id')
-  async editEmployee(@Param('_id') employeeId: string,@Body('name') name: string,@Body('branch') branch: string){
-    return this.employeesService.editEmployee(employeeId,name,branch);
-  }
   @Delete(':_id')
   async deleteEmployee(@Param('_id') employeeId: string){
-    this.employeesService.deleteEmployee(employeeId);
-    return null;
+    const deleteEmployee = await this.employeesService.deleteEmployee(employeeId);
+    return deleteEmployee;
   }
 }

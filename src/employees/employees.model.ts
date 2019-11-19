@@ -14,5 +14,5 @@ export interface Employee extends mongoose.Document {
   _id: string; first_name: string; last_name: string;
   tz_id: number; role: string;
   company: string; manager: boolean;
-  experience: string; salary: string;
+  experience: number; salary: number;
 }

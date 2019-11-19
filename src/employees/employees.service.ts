@@ -8,27 +8,43 @@ export class EmployeesService {
 
   constructor(@InjectModel('Employee') private readonly employeeModel: Model<Employee>) { }
 
-  async addEmployee(name: string, branch: string) {
-    const newEmployee = new this.employeeModel({ name, branch });
-    const employee = await newEmployee.save();
-    return employee.id as string;
-  }
   async getEmployees() {
     const employees = await this.employeeModel.find().exec();
     return employees as Employee[];
+  }
+  async addEmployee(first_name: string, last_name: string,tz_id: number,role: string,company: string,manager: boolean,experience: number,salary: number) {
+    const newEmployee = new this.employeeModel({ first_name,last_name,tz_id,role,company,manager,experience,salary });
+    const employee = await newEmployee.save();
+    return employee.id as string;
   }
   async getEmployee(employeeId: string) {
     const employee = await this.employeeModel.findById(employeeId);
     return employee;
   }
 
-  async editEmployee(employeeId: string, first_name: string, last_name: string) {
+  async editEmployee(employeeId: string, first_name: string, last_name: string,
+    tz_id: number,role: string,company: string,manager: boolean,experience: number,salary: number) {
     const employee = await this.findEmployee(employeeId);
     if (first_name) {
         employee.first_name = first_name;
     }
     if (last_name) {
         employee.last_name = last_name;
+    }
+    if (tz_id) {
+        employee.tz_id = tz_id;
+    }
+    if (company) {
+        employee.company = company;
+    }
+    if (manager) {
+        employee.manager = manager;
+    }
+    if (experience) {
+        employee.experience = experience;
+    }
+    if (salary) {
+        employee.salary = salary;
     }
     //Employee already has id so it will only update the document in the db
     const updated = await employee.save();
@@ -41,6 +57,9 @@ export class EmployeesService {
     if (employee.n === 0) {
       throw new NotFoundException('Could not find employee.');
     }
+    if (employee)
+    return true;
+  return false;
   }
   async findEmployee(employeeId: string): Promise<Employee> {
     let employee;

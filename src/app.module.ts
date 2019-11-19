@@ -5,9 +5,11 @@ import { AppService } from './app.service';
 
 /* Modules */
 import { CompaniesModule } from './companies/companies.module';
+import { EmployeesModule } from './employees/employees.module';
+import { SalaryTableModule } from './salaryTable/salaryTable.module';
 
 @Module({
-  imports: [CompaniesModule , MongooseModule.forRoot('mongodb://roni6ch:abcde12345@ds047958.mlab.com:47958/companies-holdings')],
+  imports: [CompaniesModule ,EmployeesModule,SalaryTableModule, MongooseModule.forRoot('mongodb://roni6ch:abcde12345@ds047958.mlab.com:47958/companies-holdings')],
   controllers: [AppController],
   providers: [AppService],
 })
