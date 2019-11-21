@@ -24,6 +24,7 @@ export class EmployeesService {
 
   async editEmployee(employeeId: string, first_name: string, last_name: string,
     tz_id: number,role: string,company: string,manager: boolean,experience: number,salary: number) {
+
     const employee = await this.findEmployee(employeeId);
     if (first_name) {
         employee.first_name = first_name;
@@ -37,8 +38,9 @@ export class EmployeesService {
     if (company) {
         employee.company = company;
     }
-    if (manager) {
-        employee.manager = manager;
+    employee.manager = manager;
+    if (role) {
+        employee.role = role;
     }
     if (experience) {
         employee.experience = experience;
@@ -46,6 +48,7 @@ export class EmployeesService {
     if (salary) {
         employee.salary = salary;
     }
+    console.log(employee);
     //Employee already has id so it will only update the document in the db
     const updated = await employee.save();
     if (updated)
